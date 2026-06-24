@@ -1,0 +1,52 @@
+# Dependencias
+node_modules/
+*/node_modules/
+
+# Variables de entorno
+.env
+.env.local
+.env.production
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDEs
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Build outputs
+dist/
+build/
+*/dist/
+*/build/
+
+# Angular
+.angular/
+*.ngfactory.ts
+*.ngsummary.json
+
+# Bases de datos locales
+*.db
+*.sqlite
+
+# Archivos temporales
+tmp/
+temp/
+*.tmp
+
+# Backups
+*.bak
+*.backup
+
+# Configuración local de herramientas
+.claude/
