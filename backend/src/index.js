@@ -9,6 +9,7 @@ const lawyersRoutes = require('./routes/lawyersRoutes');
 const applicationsRoutes = require('./routes/applicationsRoutes');
 const messagesRoutes = require('./routes/messagesRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const identityRoutes = require('./routes/identityRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,7 +18,19 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({
   origin: process.env.CORS_ORIGIN || 'http://localhost:4200'
 }));
-app.use(express.json());
+
+// express.json() con 'verify' guarda el body crudo en req.rawBody
+// SOLO para /identity/webhook. Ese endpoint necesita el string crudo
+// (sin re-serializar) para poder validar la firma HMAC que manda
+// Didit; el resto de las rutas no lo necesita y no vale la pena
+// guardar el raw body de cada request.
+app.use(express.json({
+  verify: (req, res, buf) => {
+    if (req.originalUrl === '/identity/webhook') {
+      req.rawBody = buf.toString('utf8');
+    }
+  }
+}));
 app.use(express.urlencoded({ extended: true }));
 
 // Logger simple
@@ -33,6 +46,7 @@ app.use('/lawyers', lawyersRoutes);
 app.use('/applications', applicationsRoutes);
 app.use('/messages', messagesRoutes);
 app.use('/admin', adminRoutes);
+app.use('/identity', identityRoutes);
 
 // Ruta de health check
 app.get('/health', (req, res) => {
@@ -50,7 +64,8 @@ app.get('/', (req, res) => {
       lawyers: '/lawyers',
       applications: '/applications',
       messages: '/messages',
-      admin: '/admin'
+      admin: '/admin',
+      identity: '/identity'
     }
   });
 });
